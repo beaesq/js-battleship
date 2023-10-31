@@ -3,3 +3,5 @@
 .eslintrc.json
 .prettierignore
 .prettierrc
+__mocks__
+jest.config.js
