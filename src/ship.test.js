@@ -1,7 +1,17 @@
 import createShip from "./ship";
 
 describe('hit()', () => {
+  it('increases hits by 1 when ship is not yet fully hit', () => {
+    const ship = createShip(4);
+    ship.hit();
+    expect(ship).toHaveProperty('hitTotal', 1);
+  });
 
+  it('does not increase hits when ship is fully hit', () => {
+    const ship = createShip(4, 4);
+    ship.hit();
+    expect(ship).toHaveProperty('hitTotal', 4);
+  });
 });
 
 describe('isSunk()', () => {
