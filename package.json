@@ -7,7 +7,7 @@
     "test": "jest",
     "build": "webpack",
     "start": "webpack serve --open",
-    "watch": "jest --watch /src/*.test.js"
+    "watch": "jest --watch src/*.test.js"
   },
   "keywords": [],
   "author": "",
