@@ -5,3 +5,4 @@
 .prettierrc
 __mocks__
 jest.config.js
+babel.config.js
