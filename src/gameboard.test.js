@@ -14,7 +14,7 @@ describe('placing ships', () => {
 
     gameboard.place(mockCreateShip, length, coordinates, isVertical);
 
-    expect(mockCreateShip).toHaveBeenCalledWith(length, 0);
+    expect(mockCreateShip).toHaveBeenCalledWith(length);
     expect(gameboard.ships[0]).toHaveProperty('coordinates', coordinates);
     expect(gameboard.ships[0]).toHaveProperty('ship', shipObj);
     expect(gameboard.ships[0]).toHaveProperty('isVertical', isVertical);
