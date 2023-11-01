@@ -57,7 +57,7 @@ describe('placing ships', () => {
   });
 });
 
-describe('receiveAttack()', () => { 
+describe('attacking ships', () => { 
   let gameboard;
   let mockHit;
 
@@ -94,5 +94,45 @@ describe('receiveAttack()', () => {
     gameboard.receiveAttack(coordinates);
     expect(mockHit).toHaveBeenCalledTimes(0);
     expect(gameboard.misses).toHaveLength(0);
+  });
+});
+
+describe('checking ships', () => { 
+  it('says that all ships are sunk', () => { 
+    const shipObj0 = {
+      ship: {
+        isSunk() {
+          return true;
+        } 
+      }
+    };
+    const shipObj1 = {
+      ship: {
+        isSunk() {
+          return true;
+        } 
+      }
+    };
+    const gameboard = createGameboard(10, [shipObj0, shipObj1])
+    expect(gameboard.areAllShipsSunk()).toBeTruthy();
+  });
+
+  it('says that not all ships are sunk', () => { 
+    const shipObj0 = {
+      ship: {
+        isSunk() {
+          return true;
+        } 
+      }
+    };
+    const shipObj1 = {
+      ship: {
+        isSunk() {
+          return false;
+        } 
+      }
+    };
+    const gameboard = createGameboard(10, [shipObj0, shipObj1])
+    expect(gameboard.areAllShipsSunk()).toBeFalsy();
   });
 });
