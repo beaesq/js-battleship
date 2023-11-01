@@ -67,6 +67,8 @@ export default function createGameboard(size = 10, ships = [], misses = []) {
   }
 
   function receiveAttack(attack) {
+    if (isOutsideBoard(attack)) return;
+
     // go through all existing ships
     for (let i = 0; i < ships.length; i += 1) {
       const currentShip = ships[i];
