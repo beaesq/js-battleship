@@ -88,5 +88,14 @@ export default function createGameboard(size = 10, ships = [], misses = []) {
     misses.push(attack);
   }
 
-  return { ships, place, receiveAttack, misses }
+  function areAllShipsSunk() {
+    let result = true;
+    for (let i = 0; i < ships.length; i += 1) {
+      const currentShip = ships[i];
+      result = result && currentShip.ship.isSunk();
+    }
+    return result;
+  }
+
+  return { ships, place, receiveAttack, misses, areAllShipsSunk }
 }
