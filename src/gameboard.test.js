@@ -58,16 +58,21 @@ describe('placing ships', () => {
 });
 
 describe('receiveAttack()', () => { 
-  const mockHit = jest.fn();
-  const shipObj = {
-    coordinates: [1, 1],
-    isVertical: true,
-    ship: {
-      length: 5,
-      hit: mockHit
-    }
-  };
-  const gameboard = createGameboard(10, [shipObj]);
+  let gameboard;
+  let mockHit;
+
+  beforeEach(() => {
+    mockHit = jest.fn();
+    const shipObj = {
+      coordinates: [1, 1],
+      isVertical: true,
+      ship: {
+        length: 5,
+        hit: mockHit
+      }
+    };
+    gameboard = createGameboard(10, [shipObj]);
+  });
 
   it('hits a ship when the attack hits', () => { 
     const coordinates = [1, 4];
@@ -75,10 +80,19 @@ describe('receiveAttack()', () => {
     expect(mockHit).toHaveBeenCalledTimes(1);
   });
 
-  it('records a miss when the attack misses', () => { 
-    const coordinates = [2, 4];
+  it('records misses when attacks miss', () => { 
+    const coordinates = [[2, 4], [9, 9]];
+    gameboard.receiveAttack(coordinates[0]);
+    gameboard.receiveAttack(coordinates[1]);
+    expect(gameboard.misses).toHaveLength(2);
+    expect(gameboard.misses[0]).toEqual(coordinates[0]);
+    expect(gameboard.misses[1]).toEqual(coordinates[1]);
+  });
+
+  it('does nothing when attack is outside board', () => { 
+    const coordinates = [10, 1];
     gameboard.receiveAttack(coordinates);
-    expect(gameboard.misses).toHaveLength(1);
-    expect(gameboard.misses[0]).toEqual(coordinates)
+    expect(mockHit).toHaveBeenCalledTimes(0);
+    expect(gameboard.misses).toHaveLength(0);
   });
 });
