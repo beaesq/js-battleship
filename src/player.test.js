@@ -12,7 +12,7 @@ describe('computer player', () => {
 
   beforeEach(() => { 
     mockCreateGameboard = jest.fn();
-    jest.spyOn(global.Math, 'random').mockReturnValueOnce(0.123456789).mockReturnValueOnce(0.123456789).mockReturnValueOnce(0.123456789).mockReturnValue(0.999999999);
+    jest.spyOn(global.Math, 'random').mockReturnValueOnce(0.123456789).mockReturnValueOnce(0.123456789).mockReturnValueOnce(0.123456789).mockReturnValueOnce(0.123456789).mockReturnValue(0.594739);
   });
 
   it('returns a valid move', () => { 
