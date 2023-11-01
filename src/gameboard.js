@@ -1,5 +1,4 @@
-export default function createGameboard(size = 10) {
-  const ships = [];
+export default function createGameboard(size = 10, ships = [], misses = []) {
 
   function isOutsideBoard([x, y], length, isVertical) {
     for (let index = 0; index < length; index += 1) {
@@ -67,5 +66,25 @@ export default function createGameboard(size = 10) {
     ships.push(shipObj);
   }
 
-  return { ships, place }
+  function receiveAttack(attack) {
+    // go through all existing ships
+    for (let i = 0; i < ships.length; i += 1) {
+      const currentShip = ships[i];
+      const [currentShipX, currentShipY] = currentShip.coordinates;
+
+      // go through coordinate array of current ship
+      for (let j = 0; j < currentShip.ship.length; j += 1) {
+        const coordinates = currentShip.isVertical ? [currentShipX, currentShipY + j] : [currentShipX + j, currentShipY];
+
+        if (compare(coordinates, attack)) { 
+          currentShip.ship.hit();
+          return;
+        }
+      }
+    }
+
+    misses.push(attack);
+  }
+
+  return { ships, place, receiveAttack, misses }
 }
