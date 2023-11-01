@@ -56,3 +56,31 @@ describe('placing ships', () => {
     expect(gameboard.ships[1]).toHaveProperty('coordinates', coordinates1);
   });
 });
+
+describe('receiveAttack()', () => { 
+  const mockCreateShip = jest.fn();
+  const mockHit = jest.fn();
+  const gameboard = createGameboard();
+
+  beforeEach(() => {
+    const length = 4;
+    const shipObj = { length };
+    const coordinates = [1, 1];
+    const isVertical = true;
+    mockCreateShip.mockReturnValue(shipObj);
+    gameboard.place(mockCreateShip, length, coordinates, isVertical);
+  });
+
+  it('hits a ship when the attack hits', () => { 
+    const coordinates = [1, 4];
+    gameboard.receiveAttack(mockHit, coordinates);
+    expect(mockHit).toHaveBeenCalledTimes(1);
+  });
+
+  it('records a miss when the attack misses', () => { 
+    const coordinates = [2, 4];
+    gameboard.receiveAttack(mockHit, coordinates);
+    expect(gameboard.misses).toHaveLength(1);
+    expect(gameboard.misses[0]).toEqual(coordinates)
+  });
+});
