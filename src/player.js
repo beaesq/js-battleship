@@ -1,4 +1,4 @@
-export default function createPlayer(createGameboard, name = "Chuu", isHuman = false) {
+export default function createPlayer(createGameboard, name = "Chuu") {
   const gameboard = createGameboard();
   const moves = [];
 
