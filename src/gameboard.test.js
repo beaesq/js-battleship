@@ -34,6 +34,10 @@ describe('placing ships', () => {
 
   it('does not let you place a ship over an existing ship', () => {
     const gameboard = createGameboard();
+    const length0 = 5;
+    const shipObj0 = { length0 };
+    const coordinates0 = [4, 9];
+    const isVertical0 = false;
     const length1 = 5;
     const shipObj1 = { length1 };
     const coordinates1 = [4, 0];
@@ -42,11 +46,13 @@ describe('placing ships', () => {
     const shipObj2 = { length2 };
     const coordinates2 = [2, 2];
     const isVertical2 = false;
-    mockCreateShip.mockReturnValueOnce(shipObj1).mockReturnValue(shipObj2);
+    mockCreateShip.mockReturnValueOnce(shipObj0).mockReturnValueOnce(shipObj1).mockReturnValue(shipObj2);
 
+    gameboard.place(mockCreateShip, length0, coordinates0, isVertical0);
     gameboard.place(mockCreateShip, length1, coordinates1, isVertical1);
     gameboard.place(mockCreateShip, length2, coordinates2, isVertical2);
-    expect(gameboard.ships).toHaveLength(1);
-    expect(gameboard.ships[0]).toHaveProperty('coordinates', coordinates1);
+    expect(gameboard.ships).toHaveLength(2);
+    expect(gameboard.ships[0]).toHaveProperty('coordinates', coordinates0);
+    expect(gameboard.ships[1]).toHaveProperty('coordinates', coordinates1);
   });
 });
