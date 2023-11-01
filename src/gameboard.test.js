@@ -64,7 +64,7 @@ describe('receiveAttack()', () => {
     isVertical: true,
     ship: {
       length: 5,
-      mockHit
+      hit: mockHit
     }
   };
   const gameboard = createGameboard(10, [shipObj]);
