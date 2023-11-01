@@ -1,6 +1,6 @@
 export default function createGameboard(size = 10, ships = [], misses = []) {
 
-  function isOutsideBoard([x, y], length, isVertical) {
+  function isOutsideBoard([x, y], length = 1, isVertical = true) {
     for (let index = 0; index < length; index += 1) {
       const [a, b] = isVertical ? [x, y + index] : [x + index, y];
 
