@@ -22,39 +22,45 @@ function startGame() {
   return { player, computer }
 }
 
-function playerTurn(event, player, computer) {
-  console.log(`${player.name}'s turn!`);
-  const str = event.target.getAttribute("coordinates");
-  const coordinates = str.split("-").map(Number);
-  const isHit = computer.gameboard.receiveAttack(coordinates);
-  updateSquare(isHit, event.target);
+function endGame() {
+  console.log('game over');
 }
 
-function computerTurn(event, player, computer) {
+function isGameWon() {
+  return true;
+}
+
+function computerTurn(event, player, computer, divBoard, startTurn) {
   console.log("computer's turn!");
   const computerMove = computer.makeMove();
   const isHit = player.gameboard.receiveAttack(computerMove);
   updateSquare(isHit, getSquare(computerMove, false));
+  if (isGameWon()) {
+    endGame();
+  } else {
+    setTimeout(() => { divBoard.addEventListener('click', startTurn) }, 1000);
+  }
 }
 
 function setupLoop({ player, computer }) {
   const divBoard = document.getElementById("board-computer");
   
   const startTurn = (event) => {
-    playerTurn(event, player, computer);
+    console.log(`${player.name}'s turn!`);
+    const str = event.target.getAttribute("coordinates");
+    const coordinates = str.split("-").map(Number);
+    const isHit = computer.gameboard.receiveAttack(coordinates);
+    updateSquare(isHit, event.target);
 
     divBoard.removeEventListener('click', startTurn);
-    setTimeout(() => { computerTurn(event, player, computer) }, 1000);
-    setTimeout(() => { divBoard.addEventListener('click', startTurn) }, 2000);
+    if (isGameWon()) {
+      endGame();
+    } else {
+      setTimeout(() => { computerTurn(event, player, computer, divBoard, startTurn) }, 1000);
+    }
   }
 
   divBoard.addEventListener('click', startTurn);
-
-  
-}
-
-function isGameWon() {
-  
 }
 
 export { startGame, setupLoop };
