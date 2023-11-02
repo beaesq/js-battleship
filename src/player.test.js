@@ -1,12 +1,5 @@
 import createPlayer from "./player";
 
-it('makes gameboard on creation', () => { 
-  const mockCreateGameboard = jest.fn();
-  mockCreateGameboard.mockReturnValue('board');
-  const player = createPlayer(mockCreateGameboard, 'gowon');
-  expect(player.gameboard).toBe('board');
-});
-
 describe('computer player', () => {
   let mockCreateGameboard;
 

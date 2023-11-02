@@ -1,5 +1,4 @@
-export default function createPlayer(createGameboard, name = "Chuu") {
-  const gameboard = createGameboard();
+export default function createPlayer(gameboard, name = "Chuu") {
   const moves = [];
 
   function compare(arr1, arr2) {
