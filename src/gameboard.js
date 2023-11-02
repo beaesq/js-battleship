@@ -67,7 +67,7 @@ export default function createGameboard(size = 10, ships = [], misses = []) {
   }
 
   function receiveAttack(attack) {
-    if (isOutsideBoard(attack)) return;
+    if (isOutsideBoard(attack)) return false;
 
     // go through all existing ships
     for (let i = 0; i < ships.length; i += 1) {
@@ -80,12 +80,13 @@ export default function createGameboard(size = 10, ships = [], misses = []) {
 
         if (compare(coordinates, attack)) { 
           currentShip.ship.hit();
-          return;
+          return true;
         }
       }
     }
 
     misses.push(attack);
+    return false;
   }
 
   function areAllShipsSunk() {
