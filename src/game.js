@@ -1,7 +1,7 @@
 import createShip from "./ship";
 import createPlayer from "./player";
 import createGameboard from "./gameboard";
-import { setupDisplay, updateSquare, getSquare, displaySetupShip, displayPlayerShips } from "./display";
+import { setupDisplay, updateSquare, getSquare, displayPlayerShips } from "./display";
 
 function getShipLength(index) {
   switch (index) {
@@ -22,9 +22,36 @@ function getShipLength(index) {
   }
 }
 
+function setupLoop(player, index = 0, size = 10) {
+  // set board mouseover event
+  const length = getShipLength(index);
+  const divBoard = document.getElementById("board-player");
 
-function setupLoop(player, index = 0) {
-  
+  const displayShip = (event) => {
+    const str = event.target.getAttribute("coordinates");
+    const [x, y] = str.split("-").map(Number);
+    if (y + length <= size) {
+      for (let i = 0; i < length; i += 1) {
+        const square = getSquare([x, y + i], false);
+        square.style.backgroundColor = "purple";
+      }
+    }
+  }
+
+  const clearShip = (event) => {
+    const str = event.target.getAttribute("coordinates");
+    const [x, y] = str.split("-").map(Number);
+    if (y + length <= size) {
+      for (let i = 0; i < length; i += 1) {
+        const square = getSquare([x, y + i], false);
+        square.style.backgroundColor = "white";
+      }
+    }
+  }
+
+  divBoard.addEventListener("mouseover", displayShip);
+  divBoard.addEventListener("mouseout", clearShip);
+  // divBoard.addEventListener("click", placePlayerShip);
 }
 
 function placeComputerShips(computer) {
@@ -45,7 +72,7 @@ function startGame() {
   // placeComputerShips(computer);
   setupLoop(player);
   
-  displayPlayerShips(playerGameboard.ships);
+  // displayPlayerShips(playerGameboard.ships);
   return { player, computer }
 }
 
