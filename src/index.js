@@ -8,5 +8,5 @@ window.onload = () => {
   document.head.appendChild(meta);
   
   const players = startGame();
-  startGameLoop(players);
+  // startGameLoop(players);
 }
