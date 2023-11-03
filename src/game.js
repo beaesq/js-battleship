@@ -3,7 +3,6 @@ import createPlayer from "./player";
 import createGameboard from "./gameboard";
 import { setupDisplay, updateSquare, getSquare, displayPlayerShips } from "./display";
 
-let length = 0; // why does it only work when it's outside ???????
 
 function startGameLoop({ player, computer }) {
   const divBoard = document.getElementById("board-computer");
@@ -46,7 +45,7 @@ function getShipLength(index) {
 }
 
 function setupLoop(player, computer, index, size = 10) {
-  length = getShipLength(index);
+  const length = getShipLength(index);
   const divBoard = document.getElementById("board-player");
 
   const displayShip = (event) => {
