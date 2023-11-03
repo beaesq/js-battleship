@@ -1,7 +1,7 @@
 import createShip from "./ship";
 import createPlayer from "./player";
 import createGameboard from "./gameboard";
-import { setupDisplay, updateSquare, getSquare, getShipInfo, displayPlayerShips } from "./display";
+import { setupDisplay, updateSquare, getSquare, displaySetupShip, displayPlayerShips } from "./display";
 
 function getShipLength(index) {
   switch (index) {
@@ -22,13 +22,9 @@ function getShipLength(index) {
   }
 }
 
-function placePlayerShips(player) {
-  for (let index = 0; index < 1; index += 1) {
-    const length = getShipLength(index);
-    const { coordinates, isVertical } = getShipInfo(length);
-    player.gameboard.place(createShip, length, coordinates, isVertical);
-    console.log(player);
-  }
+
+function setupLoop(player, index = 0) {
+  
 }
 
 function placeComputerShips(computer) {
@@ -46,8 +42,8 @@ function startGame() {
   const computer = createPlayer(computerGameboard);
   setupDisplay(playerGameboard, computerGameboard);
   // get board setup
-  placePlayerShips(player);
   // placeComputerShips(computer);
+  setupLoop(player);
   
   displayPlayerShips(playerGameboard.ships);
   return { player, computer }
