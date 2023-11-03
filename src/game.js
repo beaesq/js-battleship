@@ -22,45 +22,41 @@ function startGame() {
   return { player, computer }
 }
 
-function endGame() {
-  console.log('game over');
+function endGame(name) {
+  console.log(`${name} wins!`);
 }
 
-function isGameWon() {
-  return true;
-}
-
-function computerTurn(event, player, computer, divBoard, startTurn) {
+function computerTurn(event, player, computer, divBoard, playerTurn) {
   console.log("computer's turn!");
   const computerMove = computer.makeMove();
   const isHit = player.gameboard.receiveAttack(computerMove);
   updateSquare(isHit, getSquare(computerMove, false));
-  if (isGameWon()) {
-    endGame();
+  if (player.gameboard.areAllShipsSunk()) {
+    endGame(computer.name);
   } else {
-    setTimeout(() => { divBoard.addEventListener('click', startTurn) }, 1000);
+    setTimeout(() => { divBoard.addEventListener('click', playerTurn) }, 1000);
   }
 }
 
 function setupLoop({ player, computer }) {
   const divBoard = document.getElementById("board-computer");
   
-  const startTurn = (event) => {
+  const playerTurn = (event) => {
     console.log(`${player.name}'s turn!`);
     const str = event.target.getAttribute("coordinates");
     const coordinates = str.split("-").map(Number);
     const isHit = computer.gameboard.receiveAttack(coordinates);
     updateSquare(isHit, event.target);
 
-    divBoard.removeEventListener('click', startTurn);
-    if (isGameWon()) {
-      endGame();
+    divBoard.removeEventListener('click', playerTurn);
+    if (computer.gameboard.areAllShipsSunk()) {
+      endGame(player.name);
     } else {
-      setTimeout(() => { computerTurn(event, player, computer, divBoard, startTurn) }, 1000);
+      setTimeout(() => { computerTurn(event, player, computer, divBoard, playerTurn) }, 1000);
     }
   }
 
-  divBoard.addEventListener('click', startTurn);
+  divBoard.addEventListener('click', playerTurn);
 }
 
 export { startGame, setupLoop };
