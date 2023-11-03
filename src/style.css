@@ -12,6 +12,7 @@
 .board {
   display: flex;
   flex-direction: column;
+  width: fit-content;
 }
 
 body {
