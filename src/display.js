@@ -39,12 +39,33 @@ function displayPlayerShips(ships, playerBoardID = "board-player") {
   }
 }
 
+function makeSetupArea() {
+  const container = document.createElement("div");
+  container.classList.add("setup-area");
+  return container;
+}
+
+function makeShipDisplay(length) {
+  const shipContainer = document.createElement("div");
+  shipContainer.classList.add("ship");
+  shipContainer.classList.add("isVertical");
+  for (let index = 0; index < length; index += 1) {
+    const square = document.createElement("div");
+    square.classList.add("ship-square");
+    shipContainer.appendChild(square);
+  }
+  return shipContainer;
+}
+
+function getShipInfo(length) {
+  return { coordinates: [0, 0], isVertical: false }
+}
+
 function setupDisplay(playerGameboard, computerGameboard) {
   const container = document.body;  // change this
-  container.appendChild(makeBoardDiv(false));
   container.appendChild(makeBoardDiv(true));
-  displayPlayerShips(playerGameboard.ships);
-  
+  container.appendChild(makeBoardDiv(false));
+  container.appendChild(makeSetupArea());
 }
 
 function updateSquare(isHit, target) {
@@ -55,4 +76,4 @@ function updateSquare(isHit, target) {
   }
 }
 
-export { setupDisplay, updateSquare, getSquare };
+export { setupDisplay, updateSquare, getSquare, getShipInfo, displayPlayerShips };
