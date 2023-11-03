@@ -24,7 +24,7 @@ function makeBoardDiv(isComputer, size = 10) {
 function getSquare([a, b], isComputer = true, playerBoardID = "board-player", computerBoardID = "board-computer") {
   const boardID = isComputer ? computerBoardID : playerBoardID;
   const divBoard = document.getElementById(boardID);
-  return divBoard.querySelector(`[coordinates="${b}-${a}"]`);
+  return divBoard.querySelector(`[coordinates="${a}-${b}"]`);
 }
 
 function displayPlayerShips(ships, playerBoardID = "board-player") {
@@ -33,7 +33,7 @@ function displayPlayerShips(ships, playerBoardID = "board-player") {
     const [currentShipX, currentShipY] = currentShip.coordinates;
     for (let j = 0; j < currentShip.ship.length; j += 1) {
       const [a, b] = currentShip.isVertical ? [currentShipX, currentShipY + j] : [currentShipX + j, currentShipY];
-      const square = getSquare([a, b], false, playerBoardID);
+      const square = getSquare([a, b], false, playerBoardID); // !!! check if x & y gets flipped
       square.classList.add('ship');
     }
   }
