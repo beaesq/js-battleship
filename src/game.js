@@ -1,24 +1,55 @@
 import createShip from "./ship";
 import createPlayer from "./player";
 import createGameboard from "./gameboard";
-import { setupDisplay, updateSquare, getSquare } from "./display";
+import { setupDisplay, updateSquare, getSquare, getShipInfo, displayPlayerShips } from "./display";
+
+function getShipLength(index) {
+  switch (index) {
+    case 0:
+      return 5;
+    case 1:
+      return 4;
+    case 2:
+      return 3;
+    case 3:
+    case 4:
+      return 2;
+    case 5:
+    case 6:
+      return 1;
+    default:
+      return 2;
+  }
+}
+
+function placePlayerShips(player) {
+  for (let index = 0; index < 1; index += 1) {
+    const length = getShipLength(index);
+    const { coordinates, isVertical } = getShipInfo(length);
+    player.gameboard.place(createShip, length, coordinates, isVertical);
+    console.log(player);
+  }
+}
+
+function placeComputerShips(computer) {
+  
+}
 
 function startGame() {
-  // get player name
-  const playerName = 'Yves';
-
   const playerGameboard = createGameboard();
   const computerGameboard = createGameboard();
   
-  playerGameboard.place(createShip, 5, [0, 0], true);
-  playerGameboard.place(createShip, 3, [7, 5], false);
-  computerGameboard.place(createShip, 2, [3, 4], false);
-  computerGameboard.place(createShip, 3, [6, 3], true);
-
+  // get player name
+  const playerName = 'Yves';
+  
   const player = createPlayer(playerGameboard, playerName);
   const computer = createPlayer(computerGameboard);
   setupDisplay(playerGameboard, computerGameboard);
-
+  // get board setup
+  placePlayerShips(player);
+  // placeComputerShips(computer);
+  
+  displayPlayerShips(playerGameboard.ships);
   return { player, computer }
 }
 
@@ -38,7 +69,7 @@ function computerTurn(event, player, computer, divBoard, playerTurn) {
   }
 }
 
-function setupLoop({ player, computer }) {
+function startGameLoop({ player, computer }) {
   const divBoard = document.getElementById("board-computer");
   
   const playerTurn = (event) => {
@@ -59,4 +90,4 @@ function setupLoop({ player, computer }) {
   divBoard.addEventListener('click', playerTurn);
 }
 
-export { startGame, setupLoop };
+export { startGame, startGameLoop };
