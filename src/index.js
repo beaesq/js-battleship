@@ -1,4 +1,4 @@
-import { startGame, setupLoop } from "./game";
+import { startGame, startGameLoop } from "./game";
 import './style.css';
 
 window.onload = () => {
@@ -8,5 +8,5 @@ window.onload = () => {
   document.head.appendChild(meta);
   
   const players = startGame();
-  setupLoop(players);
+  startGameLoop(players);
 }
