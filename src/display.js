@@ -45,7 +45,7 @@ function makeSetupArea() {
   return container;
 }
 
-function setupDisplay(playerGameboard, computerGameboard) {
+function displayBoards() {
   const container = document.body;  // change this
   container.appendChild(makeBoardDiv(true));
   container.appendChild(makeBoardDiv(false));
@@ -77,7 +77,7 @@ function getSetupText(index) {
     case 6:
       return "Place your second submarine!"
     default:
-      return "stan loona";
+      return "Enter your name 😈";
   }
 }
 
@@ -89,9 +89,24 @@ function displaySetupInfo(index) {
   text.innerHTML = getSetupText(index);
   container.appendChild(text);
 
-  const button = document.createElement("button");
-  button.innerHTML = "Rotate Ship";
-  container.appendChild(button);
+  if (index >= 0 || index <= 6) {
+    const button = document.createElement("button");
+    button.setAttribute("type", "button");
+    button.innerHTML = "Rotate Ship";
+    container.appendChild(button);
+  } else {
+    const form = document.createElement("form");
+    const input = document.createElement("input");
+    input.setAttribute("type", "text");
+    input.setAttribute("id", "player-name");
+    input.setAttribute("name", "player-name");
+    input.setAttribute("placeholder", "Your name");
+    form.appendChild(input);
+    const button = document.createElement("button");
+    button.innerHTML = "Submit";
+    form.appendChild(button);
+    container.appendChild(form);
+  }
 }
 
-export { setupDisplay, updateSquare, getSquare, displayPlayerShips, displaySetupInfo };
+export { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo };
