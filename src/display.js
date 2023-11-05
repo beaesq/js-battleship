@@ -60,4 +60,38 @@ function updateSquare(isHit, target) {
   }
 }
 
-export { setupDisplay, updateSquare, getSquare, displayPlayerShips };
+function getSetupText(index) {
+  switch (index) {
+    case 0:
+      return "Place your carrier!"
+    case 1:
+      return "Place your battleship!"
+    case 2:
+      return "Place your cruiser!"
+    case 3:
+      return "Place your first destroyer!"
+    case 4:
+      return "Place your second destroyer!"
+    case 5:
+      return "Place your first submarine!"
+    case 6:
+      return "Place your second submarine!"
+    default:
+      return "stan loona";
+  }
+}
+
+function displaySetupInfo(index) {
+  const container = document.getElementById("setup-area");
+  container.innerHTML = "";
+
+  const text = document.createElement("p");
+  text.innerHTML = getSetupText(index);
+  container.appendChild(text);
+
+  const button = document.createElement("button");
+  button.innerHTML = "Rotate Ship";
+  container.appendChild(button);
+}
+
+export { setupDisplay, updateSquare, getSquare, displayPlayerShips, displaySetupInfo };

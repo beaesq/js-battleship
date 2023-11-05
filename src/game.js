@@ -1,7 +1,7 @@
 import createShip from "./ship";
 import createPlayer from "./player";
 import createGameboard from "./gameboard";
-import { setupDisplay, updateSquare, getSquare, displayPlayerShips } from "./display";
+import { setupDisplay, updateSquare, getSquare, displayPlayerShips, displaySetupInfo } from "./display";
 
 
 function startGameLoop({ player, computer }) {
@@ -47,13 +47,17 @@ function getShipLength(index) {
 function setupLoop(player, computer, index, size = 10) {
   const length = getShipLength(index);
   const divBoard = document.getElementById("board-player");
+  let isVertical = true;
 
+  // ship placement
   const displayShip = (event) => {
     const str = event.target.getAttribute("coordinates");
     const [x, y] = str.split("-").map(Number);
-    if (y + length <= size) {
+    const shipEnd = isVertical ? y + length : x + length;
+    if (shipEnd <= size) {
       for (let i = 0; i < length; i += 1) {
-        const square = getSquare([x, y + i], false);
+        const coordinates = isVertical ? [x, y + i] : [x + i, y];
+        const square = getSquare(coordinates, false);
         square.style.backgroundColor = "purple";
       }
     }
@@ -62,9 +66,11 @@ function setupLoop(player, computer, index, size = 10) {
   const clearShip = (event) => {
     const str = event.target.getAttribute("coordinates");
     const [x, y] = str.split("-").map(Number);
-    if (y + length <= size) {
+    const shipEnd = isVertical ? y + length : x + length;
+    if (shipEnd <= size) {
       for (let i = 0; i < length; i += 1) {
-        const square = getSquare([x, y + i], false);
+        const coordinates = isVertical ? [x, y + i] : [x + i, y];
+        const square = getSquare(coordinates, false);
         square.style = null;
       }
     }
@@ -77,18 +83,38 @@ function setupLoop(player, computer, index, size = 10) {
 
     const str = event.target.getAttribute("coordinates");
     const [x, y] = str.split("-").map(Number);
-    if (y + length <= size) {
+    const shipEnd = isVertical ? y + length : x + length;
+    if (shipEnd <= size) {
       for (let i = 0; i < length; i += 1) {
-        const square = getSquare([x, y + i], false);
+        const coordinates = isVertical ? [x, y + i] : [x + i, y];
+        const square = getSquare(coordinates, false);
         square.style = null;
       }
     }
-    player.gameboard.place(createShip, length, [x, y], true);
+    player.gameboard.place(createShip, length, [x, y], isVertical);
     displayPlayerShips(player.gameboard.ships);
 
     setupLoop(player, computer, index + 1);
   }
 
+  // setup area text & ship rotation
+  displaySetupInfo(index);
+
+  const rotateShip = (event) => {
+    isVertical = !isVertical;
+    divBoard.removeEventListener("mouseout", clearShip);
+    divBoard.removeEventListener("mouseover", displayShip);
+    divBoard.removeEventListener("click", placePlayerShip);
+    divBoard.addEventListener("mouseover", displayShip);
+    divBoard.addEventListener("mouseout", clearShip);
+    divBoard.addEventListener("click", placePlayerShip);
+  }
+
+  const setupArea = document.getElementById("setup-area");
+  const btn = setupArea.querySelector("button");
+  btn.addEventListener("click", rotateShip);
+
+  // continue/exit setup
   if (index < 7) {
     divBoard.addEventListener("mouseover", displayShip);
     divBoard.addEventListener("mouseout", clearShip);
