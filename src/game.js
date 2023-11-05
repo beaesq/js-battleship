@@ -134,8 +134,15 @@ function setupLoop(player, computer, index, size = 10) {
   }
 }
 
-function placeComputerShips(computer) {
-  computer.gameboard.place(createShip, 5, [0, 0], true);
+function placeComputerShips(computer, size = 10) {
+  for (let index = 0; index < 7; index += 1) {
+    let result = null;
+    do {
+      const coordinates = [Math.floor(Math.random() * size), Math.floor(Math.random() * size)]
+      const isVertical = (Math.random() > 0.5);
+      result = computer.gameboard.place(createShip, getShipLength(index), coordinates, isVertical);
+    } while (!result);
+  }
 }
 
 function setupPlayer() {
