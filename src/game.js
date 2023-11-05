@@ -91,10 +91,13 @@ function setupLoop(player, computer, index, size = 10) {
         square.style = null;
       }
     }
-    player.gameboard.place(createShip, length, [x, y], isVertical);
+    const result = player.gameboard.place(createShip, length, [x, y], isVertical);
     displayPlayerShips(player.gameboard.ships);
-
-    setupLoop(player, computer, index + 1);
+    if (result) {
+      setupLoop(player, computer, index + 1);
+    } else {
+      setupLoop(player, computer, index);
+    }
   }
 
   // setup area text & ship rotation
