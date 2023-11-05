@@ -3,14 +3,15 @@ import createPlayer from "./player";
 import createGameboard from "./gameboard";
 import { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo } from "./display";
 
-function playerTurn(event, player, computer, divBoard) {
+function playerTurn(event, player, computer, divBoard, clickHandler) {
   console.log(`${player.name}'s turn!`);
   const str = event.target.getAttribute("coordinates");
   const coordinates = str.split("-").map(Number);
   const isHit = computer.gameboard.receiveAttack(coordinates);
   updateSquare(isHit, event.target);
 
-  divBoard.removeEventListener('click', playerTurn);
+  divBoard.removeEventListener("click", clickHandler);
+  console.log(computer.gameboard.ships);
   if (computer.gameboard.areAllShipsSunk()) {
     endGame(player.name);
   } else {
@@ -21,9 +22,11 @@ function playerTurn(event, player, computer, divBoard) {
 function startTurn({ player, computer }) {
   const divBoard = document.getElementById("board-computer");
 
-  divBoard.addEventListener('click', (event) => {
-    playerTurn(event, player, computer, divBoard);
-  });
+  const clickHandler = (event) => {
+    playerTurn(event, player, computer, divBoard, clickHandler);
+  }
+
+  divBoard.addEventListener('click', clickHandler);
 }
 
 function getShipLength(index) {
