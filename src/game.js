@@ -1,28 +1,29 @@
 import createShip from "./ship";
 import createPlayer from "./player";
 import createGameboard from "./gameboard";
-import { setupDisplay, updateSquare, getSquare, displayPlayerShips, displaySetupInfo } from "./display";
+import { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo } from "./display";
 
+function playerTurn(event, player, computer, divBoard) {
+  console.log(`${player.name}'s turn!`);
+  const str = event.target.getAttribute("coordinates");
+  const coordinates = str.split("-").map(Number);
+  const isHit = computer.gameboard.receiveAttack(coordinates);
+  updateSquare(isHit, event.target);
 
-function startGameLoop({ player, computer }) {
-  const divBoard = document.getElementById("board-computer");
-  
-  const playerTurn = (event) => {
-    console.log(`${player.name}'s turn!`);
-    const str = event.target.getAttribute("coordinates");
-    const coordinates = str.split("-").map(Number);
-    const isHit = computer.gameboard.receiveAttack(coordinates);
-    updateSquare(isHit, event.target);
-
-    divBoard.removeEventListener('click', playerTurn);
-    if (computer.gameboard.areAllShipsSunk()) {
-      endGame(player.name);
-    } else {
-      setTimeout(() => { computerTurn(event, player, computer, divBoard, playerTurn) }, 1000);
-    }
+  divBoard.removeEventListener('click', playerTurn);
+  if (computer.gameboard.areAllShipsSunk()) {
+    endGame(player.name);
+  } else {
+    setTimeout(() => { computerTurn(event, player, computer, divBoard) }, 1000);
   }
+}
 
-  divBoard.addEventListener('click', playerTurn);
+function startTurn({ player, computer }) {
+  const divBoard = document.getElementById("board-computer");
+
+  divBoard.addEventListener('click', (event) => {
+    playerTurn(event, player, computer, divBoard);
+  });
 }
 
 function getShipLength(index) {
@@ -76,10 +77,10 @@ function setupLoop(player, computer, index, size = 10) {
     }
   }
 
-  const placePlayerShip = (event) => {
+  const placeShip = (event) => {
     divBoard.removeEventListener("mouseout", clearShip);
     divBoard.removeEventListener("mouseover", displayShip);
-    divBoard.removeEventListener("click", placePlayerShip);
+    divBoard.removeEventListener("click", placeShip);
 
     const str = event.target.getAttribute("coordinates");
     const [x, y] = str.split("-").map(Number);
@@ -100,63 +101,69 @@ function setupLoop(player, computer, index, size = 10) {
     }
   }
 
-  // setup area text & ship rotation
-  displaySetupInfo(index);
-
-  const rotateShip = (event) => {
-    isVertical = !isVertical;
-    divBoard.removeEventListener("mouseout", clearShip);
-    divBoard.removeEventListener("mouseover", displayShip);
-    divBoard.removeEventListener("click", placePlayerShip);
-    divBoard.addEventListener("mouseover", displayShip);
-    divBoard.addEventListener("mouseout", clearShip);
-    divBoard.addEventListener("click", placePlayerShip);
-  }
-
-  const setupArea = document.getElementById("setup-area");
-  const btn = setupArea.querySelector("button");
-  btn.addEventListener("click", rotateShip);
-
   // continue/exit setup
   if (index < 7) {
+    // setup area text & ship rotation
+    displaySetupInfo(index);
+    const rotateShip = (event) => {
+      isVertical = !isVertical;
+      divBoard.removeEventListener("mouseout", clearShip);
+      divBoard.removeEventListener("mouseover", displayShip);
+      divBoard.removeEventListener("click", placeShip);
+      divBoard.addEventListener("mouseover", displayShip);
+      divBoard.addEventListener("mouseout", clearShip);
+      divBoard.addEventListener("click", placeShip);
+    }
+    const setupArea = document.getElementById("setup-area");
+    const btn = setupArea.querySelector("button");
+    btn.addEventListener("click", rotateShip);
+
+    // board event listeners
     divBoard.addEventListener("mouseover", displayShip);
     divBoard.addEventListener("mouseout", clearShip);
-    divBoard.addEventListener("click", placePlayerShip);
+    divBoard.addEventListener("click", placeShip);
   } else {
     divBoard.removeEventListener("mouseout", clearShip);
     divBoard.removeEventListener("mouseover", displayShip);
-    divBoard.removeEventListener("click", placePlayerShip);
+    divBoard.removeEventListener("click", placeShip);
 
-    startGameLoop({ player, computer });
+    startTurn({ player, computer });
   }
 }
 
 function placeComputerShips(computer) {
-  
+  computer.gameboard.place(createShip, 5, [0, 0], true);
+}
+
+function setupPlayer() {
+  displaySetupInfo();
+  const setupArea = document.getElementById("setup-area");
+  const nameForm = setupArea.querySelector("form");
+
+  nameForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const name = nameForm.elements["player-name"].value;
+    const playerGameboard = createGameboard();
+    const player = createPlayer(playerGameboard, name);
+
+    const computerGameboard = createGameboard();
+    const computer = createPlayer(computerGameboard);
+    placeComputerShips(computer);
+
+    setupLoop(player, computer, 0);
+  });
 }
 
 function startGame() {
-  const playerGameboard = createGameboard();
-  const computerGameboard = createGameboard();
-  
-  // get player name
-  const playerName = 'Yves';
-  
-  const player = createPlayer(playerGameboard, playerName);
-  const computer = createPlayer(computerGameboard);
-  setupDisplay(playerGameboard, computerGameboard);
-  // get board setup
-  // placeComputerShips(computer);
-  setupLoop(player, computer, 0);
-  
-  // displayPlayerShips(playerGameboard.ships);
+  displayBoards();
+  setupPlayer()
 }
 
 function endGame(name) {
   console.log(`${name} wins!`);
 }
 
-function computerTurn(event, player, computer, divBoard, playerTurn) {
+function computerTurn(event, player, computer, divBoard) {
   console.log("computer's turn!");
   const computerMove = computer.makeMove();
   const isHit = player.gameboard.receiveAttack(computerMove);
@@ -164,8 +171,8 @@ function computerTurn(event, player, computer, divBoard, playerTurn) {
   if (player.gameboard.areAllShipsSunk()) {
     endGame(computer.name);
   } else {
-    setTimeout(() => { divBoard.addEventListener('click', playerTurn) }, 1000);
+    setTimeout(() => { startTurn({ player, computer }) }, 1000);
   }
 }
 
-export { startGame, startGameLoop };
+export { startGame, startTurn };
