@@ -54,8 +54,8 @@ export default function createGameboard(size = 10, ships = [], misses = []) {
   }
 
   function place(createShip, length, coordinates, isVertical) {
-    if (isOutsideBoard(coordinates, length, isVertical)) return;
-    if (isOverOtherShips(coordinates, length, isVertical)) return;
+    if (isOutsideBoard(coordinates, length, isVertical)) return null;
+    if (isOverOtherShips(coordinates, length, isVertical)) return null;
 
     const ship = createShip(length);
     const shipObj = {
@@ -64,6 +64,7 @@ export default function createGameboard(size = 10, ships = [], misses = []) {
       isVertical
     };
     ships.push(shipObj);
+    return shipObj;
   }
 
   function receiveAttack(attack) {
