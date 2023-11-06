@@ -2,6 +2,7 @@ import createShip from "./ship";
 import createPlayer from "./player";
 import createGameboard from "./gameboard";
 import { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo, displayTurnInfo } from "./display";
+import { includesArray } from "./includesArray";
 
 function playerTurn(event, player, computer, divBoard, clickHandler) {
   const str = event.target.getAttribute("coordinates");
@@ -9,12 +10,33 @@ function playerTurn(event, player, computer, divBoard, clickHandler) {
   const isHit = computer.gameboard.receiveAttack(coordinates);
   updateSquare(isHit, event.target);
 
-  divBoard.removeEventListener("click", clickHandler);
+  removeClickHandler(clickHandler);
   if (computer.gameboard.areAllShipsSunk()) {
     endGame(player.name);
   } else {
     displayTurnInfo(computer.name);
     setTimeout(() => { computerTurn(event, player, computer, divBoard) }, 1000);
+  }
+}
+
+function removeClickHandler(clickHandler, size = 10) {
+  for (let i = 0; i < size; i += 1) {
+    for (let j = 0; j < size; j += 1) {
+      const square = getSquare([i, j], true);
+      square.removeEventListener("click", clickHandler);
+    }
+  }
+}
+
+function addClickHandler(computer, divBoard, clickHandler, size = 10) {
+  const markedSquares = computer.gameboard.marked;
+  for (let i = 0; i < size; i += 1) {
+    for (let j = 0; j < size; j += 1) {
+      if (!includesArray(markedSquares, [i, j])) {
+        const square = getSquare([i, j], true);
+        square.addEventListener("click", clickHandler);
+      }
+    }
   }
 }
 
@@ -26,7 +48,7 @@ function startTurn({ player, computer }) {
     playerTurn(event, player, computer, divBoard, clickHandler);
   }
 
-  divBoard.addEventListener('click', clickHandler);
+  addClickHandler(computer, divBoard, clickHandler);
 }
 
 function getShipLength(index) {
