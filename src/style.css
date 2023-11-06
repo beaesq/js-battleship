@@ -48,3 +48,7 @@ body {
 .place-ship {
   background-color: violet;
 }
+
+.attack-highlight {
+  border-color: yellow;
+}

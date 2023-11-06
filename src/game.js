@@ -11,6 +11,8 @@ function playerTurn(event, player, computer, divBoard, clickHandler) {
   updateSquare(isHit, event.target);
 
   removeClickHandler(clickHandler);
+  removeMouseoverHandler();
+
   if (computer.gameboard.areAllShipsSunk()) {
     endGame(player.name);
   } else {
@@ -44,11 +46,44 @@ function addClickHandler(player, computer, divBoard, size = 10) {
   }
 }
 
+function addMouseoverHandler(computer, size = 10) {
+  const mouseoverHandler = (event) => {
+    event.target.classList.add("attack-highlight");
+  }
+
+  const mouseoutHandler = (event) => {
+    event.target.classList.remove("attack-highlight");
+  }
+
+  const markedSquares = computer.gameboard.marked;
+  for (let i = 0; i < size; i += 1) {
+    for (let j = 0; j < size; j += 1) {
+      if (!includesArray(markedSquares, [i, j])) {
+        const square = getSquare([i, j], true);
+        square.addEventListener("mouseover", mouseoverHandler);
+        square.addEventListener("mouseout", mouseoutHandler);
+      }
+    }
+  }
+}
+
+function removeMouseoverHandler(size = 10) {
+  for (let i = 0; i < size; i += 1) {
+    for (let j = 0; j < size; j += 1) {
+      const oldSq = getSquare([i, j], true);
+      const newSq = oldSq.cloneNode(true);
+      newSq.classList.remove("attack-highlight");
+      oldSq.parentNode.replaceChild(newSq, oldSq);
+    }
+  }
+}
+
 function startTurn({ player, computer }) {
   displayTurnInfo(player.name);
   const divBoard = document.getElementById("board-computer");
 
   addClickHandler(player, computer, divBoard);
+  addMouseoverHandler(computer);
 }
 
 function getShipLength(index) {
