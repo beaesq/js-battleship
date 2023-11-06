@@ -112,19 +112,46 @@ body {
 }
 
 .ship {
-  background-color: aqua;
+  background-color: var(--background-color);
+}
+
+.ship::after {
+  content: "◼";
+  color: var(--detail-color);
+  font-size: 28px;
+  position: relative;
+  left: 3px;
+  bottom: 7px;
+}
+
+.miss::after {
+  content: "🞪";
+  color: var(--detail-color);
+  font-size: 28px;
+  position: relative;
+  left: 5px;
+  bottom: 5px;
 }
 
 .hit {
-  background-color: lightpink;
+  background-color: var(--detail-color);
+}
+
+.hit::after {
+  content: "◼";
+  color: var(--detail-color);
+  font-size: 28px;
+  position: relative;
+  left: 3px;
+  bottom: 7px;
 }
 
 .miss {
-  background-color: gray;
+  background-color: var(--background-color);
 }
 
 .place-ship-highlight {
-  background-color: var(--text-color);
+  background-color: var(--detail-color);
 }
 
 .attack-highlight {
