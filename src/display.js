@@ -125,7 +125,7 @@ function displayWinInfo(name) {
   container.innerHTML = "";
 
   const text = document.createElement("p");
-  text.innerHTML = `${name} wins!`;
+  text.innerHTML = `${name} wins! ✨`;
   container.appendChild(text);
 }
 
