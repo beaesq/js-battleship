@@ -1,4 +1,4 @@
-import { startGame } from "./game";
+import startGame from "./game";
 import './style.css';
 
 window.onload = () => {
