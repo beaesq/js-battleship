@@ -1,4 +1,4 @@
-import { startGame, startGameLoop } from "./game";
+import { startGame } from "./game";
 import './style.css';
 
 window.onload = () => {
@@ -7,6 +7,5 @@ window.onload = () => {
   meta.setAttribute('content', 'width=device-width, initial-scale=1.0');
   document.head.appendChild(meta);
   
-  const players = startGame();
-  // startGameLoop(players);
+  startGame();
 }
