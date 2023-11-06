@@ -84,7 +84,7 @@ function setupLoop(player, computer, index, size = 10) {
       for (let i = 0; i < length; i += 1) {
         const coordinates = isVertical ? [x, y + i] : [x + i, y];
         const square = getSquare(coordinates, false);
-        square.style.backgroundColor = "purple";
+        square.classList.add("place-ship");
       }
     }
   }
@@ -97,7 +97,7 @@ function setupLoop(player, computer, index, size = 10) {
       for (let i = 0; i < length; i += 1) {
         const coordinates = isVertical ? [x, y + i] : [x + i, y];
         const square = getSquare(coordinates, false);
-        square.style = null;
+        square.classList.remove("place-ship");
       }
     }
   }
@@ -114,7 +114,7 @@ function setupLoop(player, computer, index, size = 10) {
       for (let i = 0; i < length; i += 1) {
         const coordinates = isVertical ? [x, y + i] : [x + i, y];
         const square = getSquare(coordinates, false);
-        square.style = null;
+        square.classList.remove("place-ship");
       }
     }
     const result = player.gameboard.place(createShip, length, [x, y], isVertical);
