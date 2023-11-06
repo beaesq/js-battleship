@@ -20,7 +20,7 @@ function addClickHandler(player, computer, divBoard, size = 10) {
   }
 }
 
-function addMouseoverHandler(computer, size = 10) {
+function addComputerMouseoverHandler(computer, size = 10) {
   const mouseoverHandler = (event) => {
     event.target.classList.add("attack-highlight");
   }
@@ -46,7 +46,7 @@ function startTurn({ player, computer }) {
   const divBoard = document.getElementById("board-computer");
 
   addClickHandler(player, computer, divBoard);
-  addMouseoverHandler(computer);
+  addComputerMouseoverHandler(computer);
 }
 
 function endGame(name) {
@@ -120,60 +120,90 @@ function getShipLength(index) {
   }
 }
 
-function setupLoop(player, computer, index, size = 10) {
+function displayShip(event, length, isVertical, size = 10) {
+  const str = event.target.getAttribute("coordinates");
+  const [x, y] = str.split("-").map(Number);
+  const shipEnd = isVertical ? y + length : x + length;
+  if (shipEnd <= size) {
+    for (let i = 0; i < length; i += 1) {
+      const coordinates = isVertical ? [x, y + i] : [x + i, y];
+      const square = getSquare(coordinates, false);
+      square.classList.add("place-ship-highlight");
+    }
+  }
+}
+
+function clearShip(event, length, isVertical, size = 10) {
+  const str = event.target.getAttribute("coordinates");
+  const [x, y] = str.split("-").map(Number);
+  const shipEnd = isVertical ? y + length : x + length;
+  if (shipEnd <= size) {
+    for (let i = 0; i < length; i += 1) {
+      const coordinates = isVertical ? [x, y + i] : [x + i, y];
+      const square = getSquare(coordinates, false);
+      square.classList.remove("place-ship-highlight");
+    }
+  }
+}
+
+function placeShip(event, player, computer, index, length, isVertical, mouseoverHandler, mouseoutHandler, clickHandler, size = 10) {
+  removeShipPlacementListeners(mouseoverHandler, mouseoutHandler, clickHandler);
+
+  const str = event.target.getAttribute("coordinates");
+  const [x, y] = str.split("-").map(Number);
+  const shipEnd = isVertical ? y + length : x + length;
+  if (shipEnd <= size) {
+    for (let i = 0; i < length; i += 1) {
+      const coordinates = isVertical ? [x, y + i] : [x + i, y];
+      const square = getSquare(coordinates, false);
+      square.classList.remove("place-ship-highlight");
+    }
+  }
+  const result = player.gameboard.place(createShip, length, [x, y], isVertical);
+  displayPlayerShips(player.gameboard.ships);
+  if (result) {
+    setupLoop(player, computer, index + 1);
+  } else {
+    setupLoop(player, computer, index);
+  }
+}
+
+function removeShipPlacementListeners(mouseoverHandler, mouseoutHandler, clickHandler, size = 10) {
+  for (let i = 0; i < size; i += 1) {
+    for (let j = 0; j < size; j += 1) {
+      const square = getSquare([i, j], false);
+        square.removeEventListener("mouseover", mouseoverHandler);
+        square.removeEventListener("mouseout", mouseoutHandler);
+        square.removeEventListener("click", clickHandler);
+    }
+  }
+}
+
+function addShipPlacementListeners(mouseoverHandler, mouseoutHandler, clickHandler, size = 10) {
+  for (let i = 0; i < size; i += 1) {
+    for (let j = 0; j < size; j += 1) {
+      const square = getSquare([i, j], false);
+        square.addEventListener("mouseover", mouseoverHandler);
+        square.addEventListener("mouseout", mouseoutHandler);
+        square.addEventListener("click", clickHandler);
+    }
+  }
+}
+
+function setupLoop(player, computer, index) {
   const length = getShipLength(index);
-  const divBoard = document.getElementById("board-player");
   let isVertical = true;
 
-  // ship placement
-  const displayShip = (event) => {
-    const str = event.target.getAttribute("coordinates");
-    const [x, y] = str.split("-").map(Number);
-    const shipEnd = isVertical ? y + length : x + length;
-    if (shipEnd <= size) {
-      for (let i = 0; i < length; i += 1) {
-        const coordinates = isVertical ? [x, y + i] : [x + i, y];
-        const square = getSquare(coordinates, false);
-        square.classList.add("place-ship");
-      }
-    }
+  const mouseoverHandler = (event) => {
+    displayShip(event, length, isVertical);
   }
 
-  const clearShip = (event) => {
-    const str = event.target.getAttribute("coordinates");
-    const [x, y] = str.split("-").map(Number);
-    const shipEnd = isVertical ? y + length : x + length;
-    if (shipEnd <= size) {
-      for (let i = 0; i < length; i += 1) {
-        const coordinates = isVertical ? [x, y + i] : [x + i, y];
-        const square = getSquare(coordinates, false);
-        square.classList.remove("place-ship");
-      }
-    }
+  const mouseoutHandler = (event) => {
+    clearShip(event, length, isVertical);
   }
 
-  const placeShip = (event) => {
-    divBoard.removeEventListener("mouseout", clearShip);
-    divBoard.removeEventListener("mouseover", displayShip);
-    divBoard.removeEventListener("click", placeShip);
-
-    const str = event.target.getAttribute("coordinates");
-    const [x, y] = str.split("-").map(Number);
-    const shipEnd = isVertical ? y + length : x + length;
-    if (shipEnd <= size) {
-      for (let i = 0; i < length; i += 1) {
-        const coordinates = isVertical ? [x, y + i] : [x + i, y];
-        const square = getSquare(coordinates, false);
-        square.classList.remove("place-ship");
-      }
-    }
-    const result = player.gameboard.place(createShip, length, [x, y], isVertical);
-    displayPlayerShips(player.gameboard.ships);
-    if (result) {
-      setupLoop(player, computer, index + 1);
-    } else {
-      setupLoop(player, computer, index);
-    }
+  const clickHandler = (event) => {
+    placeShip(event, player, computer, index, length, isVertical, mouseoverHandler, mouseoutHandler, clickHandler);
   }
 
   // continue/exit setup
@@ -182,26 +212,16 @@ function setupLoop(player, computer, index, size = 10) {
     displaySetupInfo(index);
     const rotateShip = () => {
       isVertical = !isVertical;
-      divBoard.removeEventListener("mouseout", clearShip);
-      divBoard.removeEventListener("mouseover", displayShip);
-      divBoard.removeEventListener("click", placeShip);
-      divBoard.addEventListener("mouseover", displayShip);
-      divBoard.addEventListener("mouseout", clearShip);
-      divBoard.addEventListener("click", placeShip);
+      removeShipPlacementListeners(mouseoverHandler, mouseoutHandler, clickHandler);
+      addShipPlacementListeners(mouseoverHandler, mouseoutHandler, clickHandler);
     }
     const setupArea = document.getElementById("setup-area");
     const btn = setupArea.querySelector("button");
     btn.addEventListener("click", rotateShip);
-
-    // board event listeners
-    divBoard.addEventListener("mouseover", displayShip);
-    divBoard.addEventListener("mouseout", clearShip);
-    divBoard.addEventListener("click", placeShip);
+    // square event listeners
+    addShipPlacementListeners(mouseoverHandler, mouseoutHandler, clickHandler);
   } else {
-    divBoard.removeEventListener("mouseout", clearShip);
-    divBoard.removeEventListener("mouseover", displayShip);
-    divBoard.removeEventListener("click", placeShip);
-
+    removeShipPlacementListeners(mouseoverHandler, mouseoutHandler, clickHandler);
     startTurn({ player, computer });
   }
 }
