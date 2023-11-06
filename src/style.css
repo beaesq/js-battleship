@@ -1,7 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
+
+* {
+  font-family: 'Dosis', sans-serif;
+  --detail-color: #f408a3;
+  --background-color: #001474;
+  --text-color: #fabdd7;
+  color: var(--text-color);
+  font-size: 24px;
+}
+
+body {
+  background-color: var(--background-color);
+  height: 100%;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 350px));
+  row-gap: 40px;
+  column-gap: 80px;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  grid-template-areas:
+    "setup setup"
+    "computer player";
+}
+
+#setup-area {
+  margin-top: 30px;
+  width: 80%;
+  height: 150px;
+  border: 6px var(--detail-color) double;
+  border-radius: 30px;
+  grid-area: setup;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#setup-area p {
+  margin: 0px;
+  padding-bottom: 10px;
+}
+
+#setup-area input[type=text] {
+  background-color: var(--background-color);
+  box-shadow: none;
+  border-radius: 20px;
+  border: var(--detail-color) solid 4px;
+  padding: 3px 13px;
+}
+
+#setup-area input[type=text]:focus {
+  border: var(--detail-color) solid 4px;
+  background-color: var(--background-color);
+  outline: none;
+}
+
+#setup-area button {
+  margin-left: 10px;
+
+  background-color: var(--background-color);
+  box-shadow: none;
+  border-radius: 20px;
+  border: var(--background-color) solid 4px;
+  padding: 3px 10px;
+  cursor: pointer;
+  color: var(--detail-color);
+}
+
+#setup-area button:hover {
+  border: var(--detail-color) solid 4px;
+}
+
+#setup-area button:active {
+  background-color: var(--detail-color);
+  color: var(--text-color);
+}
+
+#board-player {
+  grid-area: player;
+}
+
+#board-computer {
+  grid-area: computer;
+}
+
 .board-square {
   width: 30px;
   height: 30px;
-  border: 1px solid red;
+  border: 2px solid var(--detail-color);
+  margin: 2px;
 }
 
 .board-row {
@@ -13,13 +107,8 @@
   display: flex;
   flex-direction: column;
   width: fit-content;
-}
-
-body {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 350px));
-  gap: 40px;
-  justify-content: center;
+  border: 2px solid var(--detail-color);
+  padding: 1px;
 }
 
 .ship {
@@ -34,21 +123,19 @@ body {
   background-color: gray;
 }
 
-#setup-area {
-  min-width: 80vw;
-  height: 300px;
-  border: 1px black solid;
-  grid-row: 3;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.place-ship {
-  background-color: violet;
+.place-ship-highlight {
+  background-color: var(--text-color);
 }
 
 .attack-highlight {
-  border-color: yellow;
+  border-color: var(--text-color);
+}
+
+@media screen and (max-width: 800px) {
+  #container {
+    grid-template-areas:
+      "setup"
+      "computer"
+      "player";
+  }
 }
