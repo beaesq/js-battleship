@@ -33,7 +33,7 @@ function displayPlayerShips(ships, playerBoardID = "board-player") {
     const [currentShipX, currentShipY] = currentShip.coordinates;
     for (let j = 0; j < currentShip.ship.length; j += 1) {
       const [a, b] = currentShip.isVertical ? [currentShipX, currentShipY + j] : [currentShipX + j, currentShipY];
-      const square = getSquare([a, b], false, playerBoardID); // !!! check if x & y gets flipped
+      const square = getSquare([a, b], false, playerBoardID); 
       square.classList.add('ship');
     }
   }
@@ -46,10 +46,12 @@ function makeSetupArea() {
 }
 
 function displayBoards() {
-  const container = document.body;  // change this
+  const container = document.createElement("div"); 
+  container.setAttribute("id", "container");
   container.appendChild(makeBoardDiv(true));
   container.appendChild(makeBoardDiv(false));
   container.appendChild(makeSetupArea());
+  document.body.appendChild(container);
 }
 
 function updateSquare(isHit, target) {
