@@ -1,3 +1,5 @@
+import { compare, includesArray } from "./includesArray";
+
 export default function createGameboard(size = 10, ships = [], misses = [], marked = []) {
 
   function isOutsideBoard([x, y], length = 1, isVertical = true) {
@@ -7,24 +9,6 @@ export default function createGameboard(size = 10, ships = [], misses = [], mark
       if (a < 0 || a > size - 1 || b < 0 || b > size - 1) {
         return true;
       }
-    }
-    return false;
-  }
-
-  function compare(arr1, arr2) {
-    // assumes same number of elements
-    for (let index = 0; index < arr1.length; index += 1) {
-      if (arr1[index] !== arr2[index]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  function includesArray(sourceArray, searchElement) {
-    // assumes same number of elements
-    for (let index = 0; index < sourceArray.length; index += 1) {
-      if (compare(sourceArray[index], searchElement)) return true;
     }
     return false;
   }
