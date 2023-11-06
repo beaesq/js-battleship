@@ -1,25 +1,25 @@
 import createShip from "./ship";
 import createPlayer from "./player";
 import createGameboard from "./gameboard";
-import { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo } from "./display";
+import { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo, displayTurnInfo } from "./display";
 
 function playerTurn(event, player, computer, divBoard, clickHandler) {
-  console.log(`${player.name}'s turn!`);
   const str = event.target.getAttribute("coordinates");
   const coordinates = str.split("-").map(Number);
   const isHit = computer.gameboard.receiveAttack(coordinates);
   updateSquare(isHit, event.target);
 
   divBoard.removeEventListener("click", clickHandler);
-  console.log(computer.gameboard.ships);
   if (computer.gameboard.areAllShipsSunk()) {
     endGame(player.name);
   } else {
+    displayTurnInfo(computer.name);
     setTimeout(() => { computerTurn(event, player, computer, divBoard) }, 1000);
   }
 }
 
 function startTurn({ player, computer }) {
+  displayTurnInfo(player.name);
   const divBoard = document.getElementById("board-computer");
 
   const clickHandler = (event) => {
@@ -174,7 +174,6 @@ function endGame(name) {
 }
 
 function computerTurn(event, player, computer, divBoard) {
-  console.log("computer's turn!");
   const computerMove = computer.makeMove();
   const isHit = player.gameboard.receiveAttack(computerMove);
   updateSquare(isHit, getSquare(computerMove, false));

@@ -109,4 +109,13 @@ function displaySetupInfo(index) {
   }
 }
 
-export { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo };
+function displayTurnInfo(name) {
+  const container = document.getElementById("setup-area");
+  container.innerHTML = "";
+
+  const text = document.createElement("p");
+  text.innerHTML = `${name}'s turn!`;
+  container.appendChild(text);
+}
+
+export { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo, displayTurnInfo };
