@@ -1,4 +1,4 @@
-export default function createGameboard(size = 10, ships = [], misses = []) {
+export default function createGameboard(size = 10, ships = [], misses = [], marked = []) {
 
   function isOutsideBoard([x, y], length = 1, isVertical = true) {
     for (let index = 0; index < length; index += 1) {
@@ -70,6 +70,8 @@ export default function createGameboard(size = 10, ships = [], misses = []) {
   function receiveAttack(attack) {
     if (isOutsideBoard(attack)) return false;
 
+    marked.push(attack);
+
     // go through all existing ships
     for (let i = 0; i < ships.length; i += 1) {
       const currentShip = ships[i];
@@ -99,5 +101,5 @@ export default function createGameboard(size = 10, ships = [], misses = []) {
     return result;
   }
 
-  return { ships, place, receiveAttack, misses, areAllShipsSunk }
+  return { ships, place, receiveAttack, misses, areAllShipsSunk, marked }
 }
