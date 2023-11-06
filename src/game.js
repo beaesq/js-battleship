@@ -4,32 +4,6 @@ import createGameboard from "./gameboard";
 import { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo, displayTurnInfo, displayWinInfo } from "./display";
 import { includesArray } from "./includesArray";
 
-function playerTurn(event, player, computer, divBoard, clickHandler) {
-  const str = event.target.getAttribute("coordinates");
-  const coordinates = str.split("-").map(Number);
-  const isHit = computer.gameboard.receiveAttack(coordinates);
-  updateSquare(isHit, event.target);
-
-  removeClickHandler(clickHandler);
-  removeMouseoverHandler();
-
-  if (computer.gameboard.areAllShipsSunk()) {
-    endGame(player.name);
-  } else {
-    displayTurnInfo(computer.name);
-    setTimeout(() => { computerTurn(event, player, computer, divBoard) }, 1000);
-  }
-}
-
-function removeClickHandler(clickHandler, size = 10) {
-  for (let i = 0; i < size; i += 1) {
-    for (let j = 0; j < size; j += 1) {
-      const square = getSquare([i, j], true);
-      square.removeEventListener("click", clickHandler);
-    }
-  }
-}
-
 function addClickHandler(player, computer, divBoard, size = 10) {
   const clickHandler = (event) => {
     playerTurn(event, player, computer, divBoard, clickHandler);
@@ -67,6 +41,38 @@ function addMouseoverHandler(computer, size = 10) {
   }
 }
 
+function startTurn({ player, computer }) {
+  displayTurnInfo(player.name);
+  const divBoard = document.getElementById("board-computer");
+
+  addClickHandler(player, computer, divBoard);
+  addMouseoverHandler(computer);
+}
+
+function endGame(name) {
+  displayWinInfo(name);
+}
+
+function computerTurn(player, computer) {
+  const computerMove = computer.makeMove();
+  const isHit = player.gameboard.receiveAttack(computerMove);
+  updateSquare(isHit, getSquare(computerMove, false));
+  if (player.gameboard.areAllShipsSunk()) {
+    endGame(computer.name);
+  } else {
+    setTimeout(() => { startTurn({ player, computer }) }, 500);
+  }
+}
+
+function removeClickHandler(clickHandler, size = 10) {
+  for (let i = 0; i < size; i += 1) {
+    for (let j = 0; j < size; j += 1) {
+      const square = getSquare([i, j], true);
+      square.removeEventListener("click", clickHandler);
+    }
+  }
+}
+
 function removeMouseoverHandler(size = 10) {
   for (let i = 0; i < size; i += 1) {
     for (let j = 0; j < size; j += 1) {
@@ -78,12 +84,21 @@ function removeMouseoverHandler(size = 10) {
   }
 }
 
-function startTurn({ player, computer }) {
-  displayTurnInfo(player.name);
-  const divBoard = document.getElementById("board-computer");
+function playerTurn(event, player, computer, divBoard, clickHandler) {
+  const str = event.target.getAttribute("coordinates");
+  const coordinates = str.split("-").map(Number);
+  const isHit = computer.gameboard.receiveAttack(coordinates);
+  updateSquare(isHit, event.target);
 
-  addClickHandler(player, computer, divBoard);
-  addMouseoverHandler(computer);
+  removeClickHandler(clickHandler);
+  removeMouseoverHandler();
+
+  if (computer.gameboard.areAllShipsSunk()) {
+    endGame(player.name);
+  } else {
+    displayTurnInfo(computer.name);
+    setTimeout(() => { computerTurn(player, computer) }, 1000);
+  }
 }
 
 function getShipLength(index) {
@@ -165,7 +180,7 @@ function setupLoop(player, computer, index, size = 10) {
   if (index < 7) {
     // setup area text & ship rotation
     displaySetupInfo(index);
-    const rotateShip = (event) => {
+    const rotateShip = () => {
       isVertical = !isVertical;
       divBoard.removeEventListener("mouseout", clearShip);
       divBoard.removeEventListener("mouseover", displayShip);
@@ -221,24 +236,7 @@ function setupPlayer() {
   });
 }
 
-function startGame() {
+export default function startGame() {
   displayBoards();
   setupPlayer()
 }
-
-function endGame(name) {
-  displayWinInfo(name);
-}
-
-function computerTurn(event, player, computer, divBoard) {
-  const computerMove = computer.makeMove();
-  const isHit = player.gameboard.receiveAttack(computerMove);
-  updateSquare(isHit, getSquare(computerMove, false));
-  if (player.gameboard.areAllShipsSunk()) {
-    endGame(computer.name);
-  } else {
-    setTimeout(() => { startTurn({ player, computer }) }, 1000);
-  }
-}
-
-export { startGame, startTurn };
