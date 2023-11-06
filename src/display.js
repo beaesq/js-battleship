@@ -118,4 +118,13 @@ function displayTurnInfo(name) {
   container.appendChild(text);
 }
 
-export { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo, displayTurnInfo };
+function displayWinInfo(name) {
+  const container = document.getElementById("setup-area");
+  container.innerHTML = "";
+
+  const text = document.createElement("p");
+  text.innerHTML = `${name} wins!`;
+  container.appendChild(text);
+}
+
+export { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo, displayTurnInfo, displayWinInfo };

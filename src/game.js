@@ -1,7 +1,7 @@
 import createShip from "./ship";
 import createPlayer from "./player";
 import createGameboard from "./gameboard";
-import { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo, displayTurnInfo } from "./display";
+import { displayBoards, updateSquare, getSquare, displayPlayerShips, displaySetupInfo, displayTurnInfo, displayWinInfo } from "./display";
 import { includesArray } from "./includesArray";
 
 function playerTurn(event, player, computer, divBoard, clickHandler) {
@@ -192,7 +192,7 @@ function startGame() {
 }
 
 function endGame(name) {
-  console.log(`${name} wins!`);
+  displayWinInfo(name);
 }
 
 function computerTurn(event, player, computer, divBoard) {
