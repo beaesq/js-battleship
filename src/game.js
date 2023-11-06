@@ -28,7 +28,11 @@ function removeClickHandler(clickHandler, size = 10) {
   }
 }
 
-function addClickHandler(computer, divBoard, clickHandler, size = 10) {
+function addClickHandler(player, computer, divBoard, size = 10) {
+  const clickHandler = (event) => {
+    playerTurn(event, player, computer, divBoard, clickHandler);
+  }
+
   const markedSquares = computer.gameboard.marked;
   for (let i = 0; i < size; i += 1) {
     for (let j = 0; j < size; j += 1) {
@@ -44,11 +48,7 @@ function startTurn({ player, computer }) {
   displayTurnInfo(player.name);
   const divBoard = document.getElementById("board-computer");
 
-  const clickHandler = (event) => {
-    playerTurn(event, player, computer, divBoard, clickHandler);
-  }
-
-  addClickHandler(computer, divBoard, clickHandler);
+  addClickHandler(player, computer, divBoard);
 }
 
 function getShipLength(index) {
